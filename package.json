@@ -41,8 +41,8 @@
     "sequelize": "^5.21.5",
     "sequelize-cli": "^5.5.1",
     "socket.io": "^2.3.0",
-    "thresh": "github:WhippingCream/thresh",
-    "tristana": "github:WhippingCream/tristana",
+    "thresh": "github:WhippingCream/thresh#7b44932d2666129a3511b624423fbb8628f3f8dd",
+    "tristana": "github:WhippingCream/tristana#2ab74fc7af06de1ae605ba1f68783e3a726a0fd1",
     "winston": "^3.2.1",
     "discord.js": "^12.0.2"
   }
