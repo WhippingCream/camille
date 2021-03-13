@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { logger } = require('../../loaders/logger');
 const { registerUser } = require('../../services/user');
-const { getLoginCookies } = require('@whipping-cream/thresh');
+const getRiotToken = require('../../services/getRiotToken');
 const route = Router();
 const userController = require('../../controller/user');
 const tokenController = require('../../controller/token');
@@ -25,13 +25,29 @@ module.exports = (app) => {
   route.post('/login', async (req, res, next) => {
     const { id, password } = req.body;
     try {
-      const loginCookies = await getLoginCookies(id, password);
-      if (!loginCookies) return res.status(520);
+      const cookies = await getRiotToken({ account: id, password });
+      if (!cookies) return res.status(520);
 
-      const jwtDecoded = jwtDecode(loginCookies['id_token']);
+      let token = null,
+        accountId = null;
+
+      cookies.some(({ name, value }) => {
+        switch (name) {
+          case 'id_token': {
+            token = value;
+            break;
+          }
+          case 'PVPNET_ID_KR': {
+            accountId = value;
+            break;
+          }
+        }
+
+        return token && accountId;
+      });
+
+      const jwtDecoded = jwtDecode(token);
       const name = jwtDecoded.acct.game_name;
-      const accountId = loginCookies['PVPNET_ID_KR'];
-      const token = loginCookies['id_token'];
       const loginResult = await userController.login(name, accountId, token);
       const groupList = await userController.getGroupList(accountId);
       return res
