@@ -15,7 +15,9 @@ const submitBtn =
 
 module.exports = async ({ account, password }) => {
   const iPhone = puppeteer.devices['iPhone X'];
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: ['--no-sandbox', '--disable-setuid-sandbox'],
+  });
   const page = await browser.newPage();
   await page.emulate(iPhone);
   await page.goto('https://na.leagueoflegends.com/ko-kr/');
